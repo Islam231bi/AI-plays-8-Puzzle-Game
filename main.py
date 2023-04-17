@@ -24,6 +24,8 @@ def AManhattan (initial_state):
     goal_state = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 
+
+
    
     return [cost, nodes_expanded, search_depth, running_time]
 
@@ -45,13 +47,21 @@ def visualize_path(state):
 
 
 def computeHeuristic (state, type):
-    value = 0
+    # Manhattan distance heuristic
     if type == 'M':
-        pass
+        distance = 0
+        for i in range(9):
+            if state[i] != 0:
+                distance += abs(i // 3 - state[i] // 3) + abs(i % 3 - state[i] % 3)
+        return distance
+    
+    # Eucledian distance heuristic
     elif type == 'E':
-        pass
-
-    return value
+        distance = 0
+        for i in range(9):
+            if state[i] != 0:
+                distance += ((i // 3 - state[i] // 3) ** 2 + (i % 3 - state[i] % 3) ** 2) ** 0.5
+        return distance
 
 def checlSolvable(state):
     invCount = 0
