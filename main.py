@@ -229,11 +229,20 @@ if __name__ == '__main__':
     
     print("Enter Puzzle initial state: (9 numbers from 0 to 8 with each number present only once)")
     initial_state = str(input())
-    # initial_state_array = [int(x) for x in initial_state]
+    initial_state_int=initial_state
+    c=0;
+    intial_state_int_arr=""
+    for i in initial_state_int:
+        c=c+1
+        if(c%2==1):
+            intial_state_int_arr+=i
+    
+    
+    initial_state_array = [int(x) for x in intial_state_int_arr]
 
-    # if (not(checlSolvable(initial_state_array))):
-    #     print("the puzzle is unsolvable")
-    #     exit()
+    if (not(checlSolvable(initial_state_array))):
+        print("the puzzle is unsolvable")
+        exit()
 
     print("Choose the preffered algorithm: (1) BFS (2) DFS (3) A*(Manhattan) (4) A*(Euclidean)")
     choice = int(input())
@@ -251,11 +260,11 @@ if __name__ == '__main__':
         et = time.time()
     elif (choice == 3):
         st = time.time()
-        output = AManhattan(initial_state)
+        output = AManhattan(initial_state_array)
         et = time.time()
     elif (choice == 4):
         st = time.time()
-        output = AEuclidean(initial_state)
+        output = AEuclidean(initial_state_array)
         et = time.time()
     else:
         print("invalid choice")
