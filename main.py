@@ -234,21 +234,21 @@ if __name__ == '__main__':
     print("Choose the preffered algorithm: (1) BFS (2) DFS (3) A*(Manhattan) (4) A*(Euclidean)")
     choice = int(input())
     if (choice == 1):
-        st = time.time()/1000
+        st = time.time()
         output = BFS(initial_state_array)
-        et = time.time()/1000
+        et = time.time()
     elif (choice == 2):
-        st = time.time()/1000
+        st = time.time()
         output = DFS(initial_state_array)
-        et = time.time()/1000
+        et = time.time()
     elif (choice == 3):
-        st = time.time()/1000
+        st = time.time()
         output = AManhattan(initial_state_array)
-        et = time.time()/1000
+        et = time.time()
     elif (choice == 4):
-        st = time.time()/1000
+        st = time.time()
         output = AEuclidean(initial_state_array)
-        et = time.time()/1000
+        et = time.time()
     else:
         print("invalid choice")
 
@@ -257,6 +257,6 @@ if __name__ == '__main__':
     print("nodes expanded: ", output[0], "nodes")
     print("search depth: ", output[1], "nodes")
     print("nodes generated: ", output[2], "nodes")
-    print("running time: ", round(et-st,2), "ms")
+    print("running time: ", (et-st)*1000, "ms")
 
 
