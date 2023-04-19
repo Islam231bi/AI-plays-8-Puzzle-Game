@@ -25,18 +25,54 @@ def DFS (initial_state):
     return [cost, nodes_expanded, search_depth, running_time]
 
 def AManhattan (initial_state):
+    
+    class node:
+        def __init__(self, state, value):
+            self.state = state
+            self.value = value
+    
     cost = 0
     nodes_expanded = 0
     search_depth = 0
     running_time = 0
+    states_list = []
+    states_list_values = []
 
-    
+    init_node = node(initial_state,computeHeuristic(initial_state, 'M'))
 
+    states_list.append(init_node)
+    states_list_values.append(init_node.value)
 
+    hq.heapify(states_list_values)
+    # set of visited states
+    explored = set()
+    cnt = 0
+    while len(states_list_values) != 0:
+        cnt+=1
+        state_value = hq.heappop(states_list_values)
+        state = []
+        tmp_node = None
+        for v in states_list:     
+            if v.value == state_value:
+                state = v.state
+                tmp_node = v
+        states_list.remove(tmp_node)
+             
+        explored.add(tuple(state))
+        nodes_expanded+=1
 
-    
-   
-    return [cost, nodes_expanded, search_depth, running_time]
+        if goalTest(list(state)):
+            print("found Goal")
+            return [cost, nodes_expanded, search_depth, running_time]
+
+        for neighbor in findNeighbours(state):
+            print(neighbor)
+            if neighbor not in states_list and tuple(neighbor) not in explored:
+                hq.heappush(states_list_values, computeHeuristic(neighbor,'M'))
+                new_node = node(neighbor,computeHeuristic(neighbor, 'M'))
+                states_list.append(new_node)
+
+    return None
 
 def AEuclidean (initial_state):
     cost = 0
