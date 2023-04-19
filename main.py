@@ -26,19 +26,20 @@ def DFS (initial_state):
 
 def AManhattan (initial_state):
     
-    class node:
-        def __init__(self, state, value):
+    class Node:
+        def __init__(self, state, value, parent):
             self.state = state
             self.value = value
+            self.parent = parent
     
-    cost = 0
     nodes_expanded = 0
+    nodes_generated = 0
     search_depth = 0
     running_time = 0
     states_list = []
     states_list_values = []
 
-    init_node = node(initial_state,computeHeuristic(initial_state, 'M'))
+    init_node = Node(initial_state,computeHeuristic(initial_state, 'M'),None)
 
     states_list.append(init_node)
     states_list_values.append(init_node.value)
@@ -62,32 +63,87 @@ def AManhattan (initial_state):
 
         if goalTest(list(state)):
             print("found Goal")
-            return [cost, nodes_expanded, search_depth, running_time]
+            return [nodes_expanded, search_depth, running_time, nodes_generated, tmp_node]
 
         for neighbor in findNeighbours(state):
             if neighbor not in states_list and tuple(neighbor) not in explored:
+                nodes_generated+=1
                 hq.heappush(states_list_values, computeHeuristic(neighbor,'M'))
-                new_node = node(neighbor,computeHeuristic(neighbor, 'M'))
+                new_node = Node(neighbor,computeHeuristic(neighbor, 'M'),tmp_node)
                 states_list.append(new_node)
 
     return None
 
 def AEuclidean (initial_state):
-    cost = 0
+    
+    class Node:
+        def __init__(self, state, value, parent):
+            self.state = state
+            self.value = value
+            self.parent = parent
+    
     nodes_expanded = 0
+    nodes_generated = 0
     search_depth = 0
     running_time = 0
+    states_list = []
+    states_list_values = []
 
+    init_node = Node(initial_state,computeHeuristic(initial_state, 'E'),None)
 
-    return [cost, nodes_expanded, search_depth, running_time]
+    states_list.append(init_node)
+    states_list_values.append(init_node.value)
+
+    hq.heapify(states_list_values)
+    # set of visited states
+    explored = set()
+
+    while len(states_list_values) != 0:
+        state_value = hq.heappop(states_list_values)
+        state = []
+        tmp_node = None
+        for v in states_list:     
+            if v.value == state_value:
+                state = v.state
+                tmp_node = v
+        states_list.remove(tmp_node)
+             
+        explored.add(tuple(state))
+        nodes_expanded+=1
+
+        if goalTest(list(state)):
+            print("found Goal")
+            return [nodes_expanded, search_depth, running_time, nodes_generated, tmp_node]
+
+        for neighbor in findNeighbours(state):
+            if neighbor not in states_list and tuple(neighbor) not in explored:
+                nodes_generated+=1
+                hq.heappush(states_list_values, computeHeuristic(neighbor,'E'))
+                new_node = Node(neighbor,computeHeuristic(neighbor, 'E'),tmp_node)
+                states_list.append(new_node)
+
+    return None
 
 
 def visualize_path(state):
     for i in range(0,9,3):
         print(state[i],state[i+1],state[i+2])
         print("\n")
-    print("=====")
+    print("============")
 
+
+def trace_path(node):
+    cost = 0
+    path = []
+    while(node.parent != None):
+        path.append(node.state)
+        node = node.parent
+        cost+=1
+    path.append(node.state)
+    path.reverse()
+    for p in path:
+        visualize_path(p)
+    return cost
 
 def computeHeuristic (state, type):
     # Manhattan distance heuristic
@@ -183,8 +239,10 @@ if __name__ == '__main__':
     else:
         print("invalid choice")
 
-    print("cost: ", output[0])
-    print("nodes expanded: ", output[1])
-    print("search depth: ", output[2])
-    print("running time: ", output[3])
+    cost = trace_path(output[4])
+    print("cost: ", cost, "moves")
+    print("nodes expanded: ", output[0], "nodes")
+    print("search depth: ", output[1], "nodes")
+    print("running time: ", output[2], "ms")
+    print("nodes generated: ", output[3], "nodes")
 
