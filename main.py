@@ -46,9 +46,8 @@ def AManhattan (initial_state):
     hq.heapify(states_list_values)
     # set of visited states
     explored = set()
-    cnt = 0
+
     while len(states_list_values) != 0:
-        cnt+=1
         state_value = hq.heappop(states_list_values)
         state = []
         tmp_node = None
@@ -66,7 +65,6 @@ def AManhattan (initial_state):
             return [cost, nodes_expanded, search_depth, running_time]
 
         for neighbor in findNeighbours(state):
-            print(neighbor)
             if neighbor not in states_list and tuple(neighbor) not in explored:
                 hq.heappush(states_list_values, computeHeuristic(neighbor,'M'))
                 new_node = node(neighbor,computeHeuristic(neighbor, 'M'))
