@@ -1,4 +1,5 @@
 import heapq as hq
+import time
 
 
 def BFS (initial_state):
@@ -35,8 +36,6 @@ def AManhattan (initial_state):
     
     nodes_expanded = 0
     nodes_generated = 0
-    search_depth = 0
-    running_time = 0
     
     states_list = []
     states_list_values = []
@@ -65,7 +64,7 @@ def AManhattan (initial_state):
 
         if goalTest(list(state)):
             print("found Goal")
-            return [nodes_expanded, tmp_node.level, running_time, nodes_generated, tmp_node]
+            return [nodes_expanded, tmp_node.level, nodes_generated, tmp_node]
 
         for neighbor in findNeighbours(state):
             if neighbor not in states_list and tuple(neighbor) not in explored:
@@ -89,8 +88,6 @@ def AEuclidean (initial_state):
     
     nodes_expanded = 0
     nodes_generated = 0
-    search_depth = 0
-    running_time = 0
     
     states_list = []
     states_list_values = []
@@ -119,7 +116,7 @@ def AEuclidean (initial_state):
 
         if goalTest(list(state)):
             print("found Goal")
-            return [nodes_expanded, tmp_node.level, running_time, nodes_generated, tmp_node]
+            return [nodes_expanded, tmp_node.level, nodes_generated, tmp_node]
 
         for neighbor in findNeighbours(state):
             if neighbor not in states_list and tuple(neighbor) not in explored:
@@ -237,20 +234,29 @@ if __name__ == '__main__':
     print("Choose the preffered algorithm: (1) BFS (2) DFS (3) A*(Manhattan) (4) A*(Euclidean)")
     choice = int(input())
     if (choice == 1):
+        st = time.time()/1000
         output = BFS(initial_state_array)
+        et = time.time()/1000
     elif (choice == 2):
+        st = time.time()/1000
         output = DFS(initial_state_array)
+        et = time.time()/1000
     elif (choice == 3):
+        st = time.time()/1000
         output = AManhattan(initial_state_array)
+        et = time.time()/1000
     elif (choice == 4):
+        st = time.time()/1000
         output = AEuclidean(initial_state_array)
+        et = time.time()/1000
     else:
         print("invalid choice")
 
-    cost = trace_path(output[4])
+    cost = trace_path(output[3])
     print("cost: ", cost, "moves")
     print("nodes expanded: ", output[0], "nodes")
     print("search depth: ", output[1], "nodes")
-    print("running time: ", output[2], "ms")
-    print("nodes generated: ", output[3], "nodes")
+    print("nodes generated: ", output[2], "nodes")
+    print("running time: ", round(et-st,2), "ms")
+
 
