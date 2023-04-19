@@ -37,6 +37,7 @@ def AManhattan (initial_state):
     nodes_generated = 0
     search_depth = 0
     running_time = 0
+    
     states_list = []
     states_list_values = []
 
@@ -74,15 +75,17 @@ def AManhattan (initial_state):
                                 ,tmp_node,tmp_node.level+1)
                 states_list.append(new_node)
 
+
     return None
 
 def AEuclidean (initial_state):
     
     class Node:
-        def __init__(self, state, value, parent):
+        def __init__(self, state, value, parent,level):
             self.state = state
             self.value = value
             self.parent = parent
+            self.level = level
     
     nodes_expanded = 0
     nodes_generated = 0
@@ -91,7 +94,7 @@ def AEuclidean (initial_state):
     states_list = []
     states_list_values = []
 
-    init_node = Node(initial_state,computeHeuristic(initial_state, 'E'),None)
+    init_node = Node(initial_state,computeHeuristic(initial_state, 'E'),None,0)
 
     states_list.append(init_node)
     states_list_values.append(init_node.value)
@@ -120,8 +123,9 @@ def AEuclidean (initial_state):
         for neighbor in findNeighbours(state):
             if neighbor not in states_list and tuple(neighbor) not in explored:
                 nodes_generated+=1
-                hq.heappush(states_list_values, computeHeuristic(neighbor,'E'))
-                new_node = Node(neighbor,computeHeuristic(neighbor, 'E'),tmp_node)
+                hq.heappush(states_list_values, computeHeuristic(neighbor,'E')+tmp_node.level+1)
+                new_node = Node(neighbor,computeHeuristic(neighbor, 'E')+tmp_node.level+1
+                                ,tmp_node,tmp_node.level+1)
                 states_list.append(new_node)
 
     return None
