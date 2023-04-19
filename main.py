@@ -65,7 +65,7 @@ def AManhattan (initial_state):
 
         if goalTest(list(state)):
             print("found Goal")
-            return [nodes_expanded, search_depth, running_time, nodes_generated, tmp_node]
+            return [nodes_expanded, tmp_node.level, running_time, nodes_generated, tmp_node]
 
         for neighbor in findNeighbours(state):
             if neighbor not in states_list and tuple(neighbor) not in explored:
@@ -91,6 +91,7 @@ def AEuclidean (initial_state):
     nodes_generated = 0
     search_depth = 0
     running_time = 0
+    
     states_list = []
     states_list_values = []
 
@@ -118,7 +119,7 @@ def AEuclidean (initial_state):
 
         if goalTest(list(state)):
             print("found Goal")
-            return [nodes_expanded, search_depth, running_time, nodes_generated, tmp_node]
+            return [nodes_expanded, tmp_node.level, running_time, nodes_generated, tmp_node]
 
         for neighbor in findNeighbours(state):
             if neighbor not in states_list and tuple(neighbor) not in explored:
@@ -127,6 +128,7 @@ def AEuclidean (initial_state):
                 new_node = Node(neighbor,computeHeuristic(neighbor, 'E')+tmp_node.level+1
                                 ,tmp_node,tmp_node.level+1)
                 states_list.append(new_node)
+
 
     return None
 
