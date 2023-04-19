@@ -27,10 +27,11 @@ def DFS (initial_state):
 def AManhattan (initial_state):
     
     class Node:
-        def __init__(self, state, value, parent):
+        def __init__(self, state, value, parent,level):
             self.state = state
             self.value = value
             self.parent = parent
+            self.level = level
     
     nodes_expanded = 0
     nodes_generated = 0
@@ -39,7 +40,7 @@ def AManhattan (initial_state):
     states_list = []
     states_list_values = []
 
-    init_node = Node(initial_state,computeHeuristic(initial_state, 'M'),None)
+    init_node = Node(initial_state,computeHeuristic(initial_state, 'M'),None,0)
 
     states_list.append(init_node)
     states_list_values.append(init_node.value)
@@ -68,8 +69,9 @@ def AManhattan (initial_state):
         for neighbor in findNeighbours(state):
             if neighbor not in states_list and tuple(neighbor) not in explored:
                 nodes_generated+=1
-                hq.heappush(states_list_values, computeHeuristic(neighbor,'M'))
-                new_node = Node(neighbor,computeHeuristic(neighbor, 'M'),tmp_node)
+                hq.heappush(states_list_values, computeHeuristic(neighbor,'M')+tmp_node.level+1)
+                new_node = Node(neighbor,computeHeuristic(neighbor, 'M')+tmp_node.level+1
+                                ,tmp_node,tmp_node.level+1)
                 states_list.append(new_node)
 
     return None
