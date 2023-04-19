@@ -1,33 +1,108 @@
 import heapq as hq
 import time
+import queue 
+from collections import deque
 
-import numpy as np
-from bfs import BFS
-from board import Board
-from dfs import DFS
 
-# def BFS (initial_state):
-#     cost = 0
-#     nodes_expanded = 0
-#     search_depth = 0
-#     running_time = 0
+
+def BFS (initial_state):
+    class Node:
+        def __init__(self, state, parent, level):
+            self.state = state
+            self.level = level
+            self.parent = parent
     
-#     return [cost, nodes_expanded, search_depth, running_time]
+    nodes_expanded = 0
+    nodes_generated = 0
+    
+    # queue 
+    nodes_list = deque()
+    states_list = deque()
 
-# add it to your node structure
+    init_node = Node(initial_state,None,0)
+
+    nodes_list.append(init_node)
+    states_list.append(initial_state)
+
+    # set of visited states
+    explored = set()
+
+    while states_list:
+        node = nodes_list.popleft()
+        state = states_list.popleft()
+        explored.add(tuple(node.state))
+        nodes_expanded+=1
+
+        print(state)
+
+        if goalTest(state):
+            print("found Goal")
+            return [nodes_expanded, node.level, nodes_generated, node]
+
+        for neighbor in findNeighbours(state):
+            if tuple(neighbor) not in explored:
+                nodes_generated+=1
+                new_node = Node(neighbor,node,node.level+1)
+                nodes_list.append(new_node)
+                states_list.append(neighbor)
+                explored.add(tuple(neighbor))
+    
+    print("out")
+
+    return None
+
+
+def DFS (initial_state):
+    class Node:
+        def __init__(self, state, parent, level):
+            self.state = state
+            self.level = level
+            self.parent = parent
+    
+    nodes_expanded = 0
+    nodes_generated = 0
+    
+    # queue 
+    nodes_list = []
+    states_list = []
+
+    init_node = Node(initial_state,None,0)
+
+    nodes_list.append(init_node)
+    states_list.append(initial_state)
+
+    # set of visited states
+    explored = set()
+
+    while states_list:
+        node = nodes_list.pop()
+        state = states_list.pop()
+        explored.add(tuple(state))
+        nodes_expanded+=1
+
+        print(state)
+
+        if goalTest(state):
+            print("found Goal")
+            return [nodes_expanded, node.level, nodes_generated, node]
+
+        for neighbor in findNeighbours(state):
+            if tuple(neighbor) not in explored:
+                nodes_generated+=1
+                new_node = Node(neighbor,node,node.level+1)
+                nodes_list.append(new_node)
+                states_list.append(neighbor)
+                explored.add(tuple(neighbor))
+    
+    print("out")
+
+    return None
+
 def goalTest(state):
     if state == [0, 1, 2, 3, 4, 5, 6, 7, 8]:
         return True
     return False
     
-
-# def DFS (initial_state):
-#     cost = 0
-#     nodes_expanded = 0
-#     search_depth = 0
-#     running_time = 0
-    
-#     return [cost, nodes_expanded, search_depth, running_time]
 
 def AManhattan (initial_state):
     
@@ -41,12 +116,12 @@ def AManhattan (initial_state):
     nodes_expanded = 0
     nodes_generated = 0
     
-    states_list = []
+    nodes_list = []
     states_list_values = []
 
     init_node = Node(initial_state,computeHeuristic(initial_state, 'M'),None,0)
 
-    states_list.append(init_node)
+    nodes_list.append(init_node)
     states_list_values.append(init_node.value)
 
     hq.heapify(states_list_values)
@@ -57,11 +132,11 @@ def AManhattan (initial_state):
         state_value = hq.heappop(states_list_values)
         state = []
         tmp_node = None
-        for v in states_list:     
+        for v in nodes_list:     
             if v.value == state_value:
                 state = v.state
                 tmp_node = v
-        states_list.remove(tmp_node)
+        nodes_list.remove(tmp_node)
              
         explored.add(tuple(state))
         nodes_expanded+=1
@@ -71,12 +146,12 @@ def AManhattan (initial_state):
             return [nodes_expanded, tmp_node.level, nodes_generated, tmp_node]
 
         for neighbor in findNeighbours(state):
-            if neighbor not in states_list and tuple(neighbor) not in explored:
+            if neighbor not in nodes_list and tuple(neighbor) not in explored:
                 nodes_generated+=1
                 hq.heappush(states_list_values, computeHeuristic(neighbor,'M')+tmp_node.level+1)
                 new_node = Node(neighbor,computeHeuristic(neighbor, 'M')+tmp_node.level+1
                                 ,tmp_node,tmp_node.level+1)
-                states_list.append(new_node)
+                nodes_list.append(new_node)
 
 
     return None
@@ -93,12 +168,12 @@ def AEuclidean (initial_state):
     nodes_expanded = 0
     nodes_generated = 0
     
-    states_list = []
+    nodes_list = []
     states_list_values = []
 
     init_node = Node(initial_state,computeHeuristic(initial_state, 'E'),None,0)
 
-    states_list.append(init_node)
+    nodes_list.append(init_node)
     states_list_values.append(init_node.value)
 
     hq.heapify(states_list_values)
@@ -109,11 +184,11 @@ def AEuclidean (initial_state):
         state_value = hq.heappop(states_list_values)
         state = []
         tmp_node = None
-        for v in states_list:     
+        for v in nodes_list:     
             if v.value == state_value:
                 state = v.state
                 tmp_node = v
-        states_list.remove(tmp_node)
+        nodes_list.remove(tmp_node)
              
         explored.add(tuple(state))
         nodes_expanded+=1
@@ -123,12 +198,12 @@ def AEuclidean (initial_state):
             return [nodes_expanded, tmp_node.level, nodes_generated, tmp_node]
 
         for neighbor in findNeighbours(state):
-            if neighbor not in states_list and tuple(neighbor) not in explored:
+            if neighbor not in nodes_list and tuple(neighbor) not in explored:
                 nodes_generated+=1
                 hq.heappush(states_list_values, computeHeuristic(neighbor,'E')+tmp_node.level+1)
                 new_node = Node(neighbor,computeHeuristic(neighbor, 'E')+tmp_node.level+1
                                 ,tmp_node,tmp_node.level+1)
-                states_list.append(new_node)
+                nodes_list.append(new_node)
 
 
     return None
@@ -229,16 +304,7 @@ if __name__ == '__main__':
     
     print("Enter Puzzle initial state: (9 numbers from 0 to 8 with each number present only once)")
     initial_state = str(input())
-    initial_state_int=initial_state
-    c=0;
-    intial_state_int_arr=""
-    for i in initial_state_int:
-        c=c+1
-        if(c%2==1):
-            intial_state_int_arr+=i
-    
-    
-    initial_state_array = [int(x) for x in intial_state_int_arr]
+    initial_state_array = [int(x) for x in initial_state]
 
     if (not(checlSolvable(initial_state_array))):
         print("the puzzle is unsolvable")
@@ -247,16 +313,12 @@ if __name__ == '__main__':
     print("Choose the preffered algorithm: (1) BFS (2) DFS (3) A*(Manhattan) (4) A*(Euclidean)")
     choice = int(input())
     if (choice == 1):
-        p = Board(np.array(eval(initial_state)))
         st = time.time()
-        output =BFS(p)
-        output.solve()
+        output = BFS(initial_state_array)
         et = time.time()
     elif (choice == 2):
-        p = Board(np.array(eval(initial_state)))
         st = time.time()
-        output =DFS(p)
-        output.solve()
+        output = DFS(initial_state_array)
         et = time.time()
     elif (choice == 3):
         st = time.time()
@@ -269,21 +331,10 @@ if __name__ == '__main__':
     else:
         print("invalid choice")
 
-
-if (choice == 1)or(choice == 2):
-    print('path_to_goal: ' + str(output.path) + '\n')
-    print('cost_of_path: ' + str(len(output.path)) + '\n')
-    print('nodes_expanded: ' + str(output.nodes_expanded) + '\n')
-    print('nodes_explored: ' + str(len(output.explored_nodes)) + '\n')
-    print('search_depth: ' + str(output.solution.depth) + '\n')
-    print('max_search_depth: ' + str(output.max_depth) + '\n')
-
-else:
     cost = trace_path(output[3])
     print("cost: ", cost, "moves")
     print("nodes expanded: ", output[0], "nodes")
     print("search depth: ", output[1], "nodes")
     print("nodes generated: ", output[2], "nodes")
     print("running time: ", (et-st)*1000, "ms")
-
 
