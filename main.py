@@ -30,12 +30,10 @@ def BFS (initial_state):
     while states_list:
         node = nodes_list.popleft()
         state = states_list.popleft()
-        explored.add(tuple(node.state))
+        explored.add(tuple(state))
         nodes_expanded+=1
 
-        print(state)
-
-        if goalTest(state):
+        if goalTest(list(state)):
             print("found Goal")
             return [nodes_expanded, node.level, nodes_generated, node]
 
@@ -46,8 +44,6 @@ def BFS (initial_state):
                 nodes_list.append(new_node)
                 states_list.append(neighbor)
                 explored.add(tuple(neighbor))
-    
-    print("out")
 
     return None
 
@@ -80,9 +76,7 @@ def DFS (initial_state):
         explored.add(tuple(state))
         nodes_expanded+=1
 
-        print(state)
-
-        if goalTest(state):
+        if goalTest(list(state)):
             print("found Goal")
             return [nodes_expanded, node.level, nodes_generated, node]
 
@@ -93,8 +87,6 @@ def DFS (initial_state):
                 nodes_list.append(new_node)
                 states_list.append(neighbor)
                 explored.add(tuple(neighbor))
-    
-    print("out")
 
     return None
 
