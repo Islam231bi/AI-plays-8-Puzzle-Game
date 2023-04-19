@@ -1,14 +1,18 @@
 import heapq as hq
 import time
 
+import numpy as np
+from bfs import BFS
+from board import Board
+from dfs import DFS
 
-def BFS (initial_state):
-    cost = 0
-    nodes_expanded = 0
-    search_depth = 0
-    running_time = 0
+# def BFS (initial_state):
+#     cost = 0
+#     nodes_expanded = 0
+#     search_depth = 0
+#     running_time = 0
     
-    return [cost, nodes_expanded, search_depth, running_time]
+#     return [cost, nodes_expanded, search_depth, running_time]
 
 # add it to your node structure
 def goalTest(state):
@@ -17,13 +21,13 @@ def goalTest(state):
     return False
     
 
-def DFS (initial_state):
-    cost = 0
-    nodes_expanded = 0
-    search_depth = 0
-    running_time = 0
+# def DFS (initial_state):
+#     cost = 0
+#     nodes_expanded = 0
+#     search_depth = 0
+#     running_time = 0
     
-    return [cost, nodes_expanded, search_depth, running_time]
+#     return [cost, nodes_expanded, search_depth, running_time]
 
 def AManhattan (initial_state):
     
@@ -225,33 +229,47 @@ if __name__ == '__main__':
     
     print("Enter Puzzle initial state: (9 numbers from 0 to 8 with each number present only once)")
     initial_state = str(input())
-    initial_state_array = [int(x) for x in initial_state]
+    # initial_state_array = [int(x) for x in initial_state]
 
-    if (not(checlSolvable(initial_state_array))):
-        print("the puzzle is unsolvable")
-        exit()
+    # if (not(checlSolvable(initial_state_array))):
+    #     print("the puzzle is unsolvable")
+    #     exit()
 
     print("Choose the preffered algorithm: (1) BFS (2) DFS (3) A*(Manhattan) (4) A*(Euclidean)")
     choice = int(input())
     if (choice == 1):
+        p = Board(np.array(eval(initial_state)))
         st = time.time()
-        output = BFS(initial_state_array)
+        output =BFS(p)
+        output.solve()
         et = time.time()
     elif (choice == 2):
+        p = Board(np.array(eval(initial_state)))
         st = time.time()
-        output = DFS(initial_state_array)
+        output =DFS(p)
+        output.solve()
         et = time.time()
     elif (choice == 3):
         st = time.time()
-        output = AManhattan(initial_state_array)
+        output = AManhattan(initial_state)
         et = time.time()
     elif (choice == 4):
         st = time.time()
-        output = AEuclidean(initial_state_array)
+        output = AEuclidean(initial_state)
         et = time.time()
     else:
         print("invalid choice")
 
+
+if (choice == 1)or(choice == 2):
+    print('path_to_goal: ' + str(output.path) + '\n')
+    print('cost_of_path: ' + str(len(output.path)) + '\n')
+    print('nodes_expanded: ' + str(output.nodes_expanded) + '\n')
+    print('nodes_explored: ' + str(len(output.explored_nodes)) + '\n')
+    print('search_depth: ' + str(output.solution.depth) + '\n')
+    print('max_search_depth: ' + str(output.max_depth) + '\n')
+
+else:
     cost = trace_path(output[3])
     print("cost: ", cost, "moves")
     print("nodes expanded: ", output[0], "nodes")
